@@ -7,6 +7,10 @@ app = FastAPI()
 # Load the trained model (assuming the model has been saved)
 model = joblib.load('churn_model.pkl')
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
 @app.post("/predict")
 def predict_churn(data: dict):
     # Convert input data into a numpy array (or format it as required)
