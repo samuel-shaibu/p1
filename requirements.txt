@@ -1,6 +1,4 @@
-fastapi
-uvicorn
-pandas
+Flask
 numpy
 scikit-learn
 joblib
