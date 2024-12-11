@@ -1,4 +1,5 @@
-Flask
-numpy
-scikit-learn
-joblib
+black
+fastapi
+pytest
+pylint
+uvicorn[standard]

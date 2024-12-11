@@ -1,30 +1,17 @@
-from flask import Flask, request, jsonify
+from fastapi import FastAPI
 import joblib
 import numpy as np
 
-app = Flask(__name__)
+app = FastAPI()
 
-#Load the pre-trained churn prediction model
+# Load the trained model (assuming the model has been saved)
 model = joblib.load('churn_model.pkl')
 
-@app.route("/")
-def home():
-    return "Welcome to the Customer Churn Prediction API!"
-
-@app.route("/predict", methods=["POST"])
-def predict():
-    #Get input data from the request
-    input_data = request.get_json()
-
-    #convert input to the required format(ensure it matches the model's training data format)
-    try:
-        features = np.array(list(input_data.values())).reshape(-1,1)
-        prediction = model.predict(features)
-        result = {"churn_prediction": "Yes" if prediction[0] == 1 else "No"}
-        return jsonify
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+@app.post("/predict")
+def predict_churn(data: dict):
+    # Convert input data into a numpy array (or format it as required)
+    input_data = np.array(list(data.values())).reshape(1, -1)
+    prediction = model.predict(input_data)
     
-if __name__ == "__main__":
-    app.run(debug=True)
-    
+    # Return the prediction
+    return {"churn_prediction": "Yes" if prediction[0] == 1 else "No"}
