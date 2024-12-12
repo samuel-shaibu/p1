@@ -1,21 +1,26 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 import joblib
-import numpy as np
+import pandas as pd
 
 app = FastAPI()
 
 # Load the trained model (assuming the model has been saved)
 model = joblib.load('churn_model.pkl')
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+class CustomerData(BaseModel):
+    feature1: float
+    feature2: float
+    feature3: float
 
 @app.post("/predict")
-def predict_churn(data: dict):
-    # Convert input data into a numpy array (or format it as required)
-    input_data = np.array(list(data.values())).reshape(1, -1)
-    prediction = model.predict(input_data)
-    
-    # Return the prediction
-    return {"churn_prediction": "Yes" if prediction[0] == 1 else "No"}
+def predict(data: CustomerData):
+    #Convert input data to DataFrame
+    df = pd.DataFrame([data.dict()])
+    #Generate prediction
+    prediction = model.predict(df)
+    return {"churn": bool(prediction[0])}
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Churn Analysis API!"}

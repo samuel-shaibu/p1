@@ -1,5 +1,5 @@
-black
 fastapi
-pytest
-pylint
-uvicorn[standard]
+uvicorn
+pandas
+scikit-learn
+joblib
